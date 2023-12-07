@@ -1,0 +1,18 @@
+name: CI
+
+on: [push]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: docker build -t ghcr.io/cyberdonutskorp/Fin-python:1.0 .
+      - run: docker push ghcr.io/cyberdonutskorp/Fin-python:1.0
+      - run: ssh -o "StrictHostKeyChecking no" ssh 'whywelive-nketemplate-4upkvmmimz1#uhoVYf.SYMN1xVOtAFn6mONi7q2zAz04@whywelive-nketemplate-4upkvmmimz1.ssh.ws-eu106.gitpod.io' 'cd /workspace/nke-template && docker compose pull && docker compose up -d'
